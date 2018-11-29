@@ -3723,7 +3723,7 @@ bool Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 		return false;
 	}
 
-	/* ANTI-DIVULGAÇÃO - LUANLUCIANO 93 */
+	/* ANTI-DIVULGAÃ‡ÃƒO - LUANLUCIANO 93 */
 	if(
 		int(text.find("servegame")) > 0 || 
 		int(text.find(".servegame")) > 0 || 
@@ -4950,6 +4950,9 @@ bool Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId)
 	if(!player || player->isRemoved())
 		return false;
 
+	if(playerId == invitedId)
+		return false;
+	
 	Player* invitedPlayer = getPlayerByID(invitedId);
 	if(!invitedPlayer || invitedPlayer->isRemoved() || invitedPlayer->isInviting(player))
 		return false;
@@ -4965,10 +4968,8 @@ bool Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId)
 	Party* party = player->getParty();
 	if(!party)
 		party = new Party(player);
-	else if(party->getLeader() != player)
-		return false;
 
-	return party->invitePlayer(invitedPlayer);
+	return party->getLeader() == player && party->invitePlayer(invitedPlayer);
 }
 
 bool Game::playerJoinParty(uint32_t playerId, uint32_t leaderId)
